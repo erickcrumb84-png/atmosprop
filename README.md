@@ -94,6 +94,8 @@ AtmosProp implements the full ANSI/ASA S1.26-2014 atmospheric absorption formula
 
 Outputs have been cross-validated against the National Physical Laboratory (NPL) online calculator — the UK's gold-standard reference implementation — and agree within 0.05 dB/100m across the 1 kHz–16 kHz range.
 
+> **Scope note:** AtmosProp calculates atmospheric absorption only. It does not model ground reflection, refraction, turbulence, wind shear, barriers, or source directivity. Results represent free-field estimates and should be validated against measurement when used for critical applications.
+
 Click the **ANSI/ASA S1.26-2014 LOADED** status pill (green pulsing dot, upper right of the header) to open the formula summary dropdown. From there, click **↗ View Citations** to open the full citations panel with complete bibliographic references and links.
 
 ---
