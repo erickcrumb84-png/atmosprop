@@ -627,8 +627,9 @@
     border-bottom:2px solid transparent; background:none; border-top:none;
     border-left:none; border-right:none; transition:all .15s;
   }
-  .delay-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .delay-tab.active   { color:var(--accent); border-bottom-color:var(--accent); }
   .delay-tab.inactive { color:var(--text-dim); }
+  .delay-tab.selected { border-bottom-color:var(--accent); }
 
   /* Delay grid — dynamic cols set by JS, mobile 1 col */
   .delay-grid {
@@ -1476,7 +1477,7 @@ function renderDelayGrid() {
 
   // Mobile tabs — include + button at end if under max
   tabs.innerHTML = delaySlots.map((s, i) => `
-    <button class="delay-tab ${s.active ? (delayMobileTab === i ? 'active' : '') : 'inactive'}"
+    <button class="delay-tab ${delayMobileTab === i ? 'selected' : ''} ${s.active ? (delayMobileTab === i ? 'active' : '') : 'inactive'}"
       onclick="setDelayMobileTab(${i})">${s.name}</button>
   `).join('') + (delaySlots.length < DELAY_SLOT_MAX
     ? `<button class="delay-tab" onclick="addDelaySlot()"
@@ -1724,7 +1725,7 @@ function renderDelayTabs() {
   const tabs = document.getElementById('delay-tabs');
   if (!tabs) return;
   tabs.innerHTML = delaySlots.map((s, i) => `
-    <button class="delay-tab ${s.active ? (delayMobileTab === i ? 'active' : '') : 'inactive'}"
+    <button class="delay-tab ${delayMobileTab === i ? 'selected' : ''} ${s.active ? (delayMobileTab === i ? 'active' : '') : 'inactive'}"
       onclick="setDelayMobileTab(${i})">${s.name}</button>
   `).join('');
 }
@@ -2535,7 +2536,9 @@ function computeDeltaAmplitude(freqs, distM, traceTempC, traceRh, tracePa) {
   return freqs.map(f => {
     const liveAbs  = absorptionAtFreq(f, liveTempC,   liveRh,  distM, livePa);
     const traceAbs = absorptionAtFreq(f, traceTempC,  traceRh, distM, tracePa);
-    return -(liveAbs - traceAbs); // positive = live absorbs more (need more boost)
+    // liveAbs and traceAbs are positive dB loss values.
+    // When live absorbs MORE than stored (liveAbs > traceAbs), engineer needs to ADD boost → positive curve.
+    return liveAbs - traceAbs;
   });
 }
 
